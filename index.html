@@ -1,0 +1,134 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#0b1018">
+  <title>TICOH ICT SMART TRADER</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="#"><span class="brand-mark">T</span><span><strong>TICOH</strong><small>ICT SMART TRADER</small></span></a>
+    <div class="top-actions">
+      <span class="connection"><i></i> LIVE DATA DISCONNECTED</span>
+      <button id="exportBtn" class="button secondary">Export report</button>
+    </div>
+  </header>
+
+  <main class="layout">
+    <aside class="sidebar">
+      <div class="side-label">WORKSPACE</div>
+      <button class="nav-item active" data-target="dashboard"><span>▦</span> Dashboard</button>
+      <button class="nav-item" data-target="analysis"><span>⌁</span> Chart analysis</button>
+      <button class="nav-item" data-target="risk"><span>◈</span> Risk calculator</button>
+      <button class="nav-item" data-target="journal"><span>▤</span> Trade journal</button>
+      <button class="nav-item" data-target="history"><span>◷</span> Analysis history</button>
+      <div class="sidebar-note"><strong>Screenshot mode</strong><p>Analysis uses uploaded chart images and information you verify. No live feed is connected.</p></div>
+      <div class="side-footer">TICOH ICT SMART TRADER<br><span>Decision support • Not financial advice</span></div>
+    </aside>
+
+    <section class="content">
+      <section id="dashboard" class="view active">
+        <div class="page-heading">
+          <div><div class="eyebrow">TRADING WORKSPACE</div><h1>Market analysis</h1><p class="muted">Build a disciplined plan from your MT5 H4 and M15 charts.</p></div>
+          <span class="pill amber">SCREENSHOT MODE</span>
+        </div>
+        <div class="stat-grid">
+          <article class="stat-card"><span>Saved analyses</span><strong id="statAnalyses">0</strong><small>Stored in this browser</small></article>
+          <article class="stat-card"><span>Journal entries</span><strong id="statJournal">0</strong><small>Your recorded trades</small></article>
+          <article class="stat-card"><span>Default risk</span><strong>0.5%</strong><small>Adjust before each plan</small></article>
+          <article class="stat-card"><span>MT5 connection</span><strong class="danger-text">Offline</strong><small>No live price data</small></article>
+        </div>
+        <div class="section-heading"><div><h2>Start an analysis</h2><p class="muted">Upload clear screenshots from the same symbol.</p></div></div>
+        <div class="upload-grid">
+          <label class="upload-card" for="h4File"><span class="upload-icon">↑</span><strong>H4 higher-timeframe chart</strong><small>Establish bias, range, liquidity and areas of interest.</small><span class="file-name" id="h4Name">Choose image · PNG, JPG, WEBP</span><input id="h4File" type="file" accept="image/png,image/jpeg,image/webp"></label>
+          <label class="upload-card" for="m15File"><span class="upload-icon">↑</span><strong>M15 setup chart</strong><small>Inspect local structure, displacement and possible triggers.</small><span class="file-name" id="m15Name">Choose image · PNG, JPG, WEBP</span><input id="m15File" type="file" accept="image/png,image/jpeg,image/webp"></label>
+        </div>
+        <div class="form-card">
+          <div class="field-grid">
+            <label>Symbol<select id="symbol"><option>XAUUSD</option><option>EURUSD</option><option>GBPUSD</option><option>USDJPY</option><option>GBPJPY</option><option>NAS100</option><option>US30</option><option>BTCUSD</option><option>OTHER</option></select></label>
+            <label>If OTHER, enter symbol<input id="otherSymbol" placeholder="Broker symbol"></label>
+            <label>H4 bias<select id="bias"><option value="Neutral">Neutral / not established</option><option value="Bullish">Bullish</option><option value="Bearish">Bearish</option><option value="Ranging">Ranging</option></select></label>
+            <label>M15 structure<select id="structure"><option value="Unclear">Unclear / not established</option><option value="Bullish">Bullish</option><option value="Bearish">Bearish</option><option value="Ranging">Ranging</option></select></label>
+          </div>
+          <label class="full-field">Visible price / notes (optional)<textarea id="notes" rows="3" placeholder="Record only readable prices, visible sweeps, structure shifts or zones."></textarea></label>
+          <div class="form-footer"><span class="muted small">The app will not infer prices hidden or unreadable in the images.</span><button id="analyseBtn" class="button primary">Create analysis plan ↗</button></div>
+        </div>
+        <div class="notice"><strong>How this version works</strong><p>Image upload and plan creation work locally. Automated vision interpretation, OCR, live market data and broker-specific indicator calculations require additional services or real OHLC data.</p></div>
+      </section>
+
+      <section id="analysis" class="view">
+        <div class="page-heading"><div><div class="eyebrow">TOP-DOWN WORKFLOW</div><h1>Chart analysis</h1><p class="muted">Review the uploaded charts and confirm each observation manually.</p></div><span class="pill amber">MANUAL VERIFICATION</span></div>
+        <div id="analysisEmpty" class="empty-state"><div class="empty-symbol">⌁</div><h2>No analysis plan yet</h2><p>Go to Dashboard, upload H4 and M15 screenshots, then create a plan.</p><button class="button primary" data-goto="dashboard">Go to dashboard</button></div>
+        <div id="analysisResult" hidden>
+          <div class="plan-header"><div><span class="eyebrow">TICOH ICT SMART TRADER — TRADE PLAN</span><h2 id="planSymbol">XAUUSD</h2><p class="muted" id="planTimestamp"></p></div><span class="pill amber" id="signalPill">WAIT</span></div>
+          <div class="two-col">
+            <article class="panel"><h3>H4 · Higher timeframe</h3><p class="muted">Bias and key areas</p><div class="data-line"><span>Bias</span><strong id="outBias">Neutral</strong></div><div class="data-line"><span>Market structure</span><strong id="outH4Structure">Not verified</strong></div><div class="data-line"><span>Current price</span><strong>Unavailable</strong></div><div class="data-line"><span>Liquidity / POI</span><strong>Manual review required</strong></div><div id="h4Preview" class="chart-preview"></div></article>
+            <article class="panel"><h3>M15 · Entry timeframe</h3><p class="muted">Trigger and invalidation</p><div class="data-line"><span>Structure</span><strong id="outStructure">Unclear</strong></div><div class="data-line"><span>Liquidity sweep</span><strong>Not verified</strong></div><div class="data-line"><span>MSS / CHoCH</span><strong>Not verified</strong></div><div class="data-line"><span>Entry trigger</span><strong>Await confirmation</strong></div><div id="m15Preview" class="chart-preview"></div></article>
+          </div>
+          <article class="panel"><div class="panel-heading"><h3>Trade plan levels</h3><span class="pill neutral">USER-VERIFIED VALUES ONLY</span></div>
+            <div class="field-grid three">
+              <label>Signal<select id="planSignal"><option>WAIT</option><option>NO TRADE</option><option>BUY</option><option>SELL</option></select></label>
+              <label>Entry price<input id="entry" type="number" step="any" placeholder="Not set"></label>
+              <label>Stop Loss<input id="sl" type="number" step="any" placeholder="Not set"></label>
+              <label>Take Profit 1<input id="tp1" type="number" step="any" placeholder="Not set"></label>
+              <label>Take Profit 2<input id="tp2" type="number" step="any" placeholder="Optional"></label>
+              <label>Take Profit 3<input id="tp3" type="number" step="any" placeholder="Optional"></label>
+            </div>
+            <label class="full-field">Entry trigger / invalidation<textarea id="trigger" rows="2" placeholder="Example: wait for a confirmed M15 bullish MSS after a sweep, then retracement into the verified FVG."></textarea></label>
+            <div id="rrOutput" class="rr-grid"><div><span>TP1 R:R</span><strong>—</strong></div><div><span>TP2 R:R</span><strong>—</strong></div><div><span>TP3 R:R</span><strong>—</strong></div></div>
+            <div class="form-footer"><span class="muted small">R:R is calculated only from valid entered prices.</span><button id="savePlanBtn" class="button primary">Save plan</button></div>
+          </article>
+          <article class="panel"><h3>Confluence checklist</h3><p class="muted">Tick only what you can verify on the supplied charts.</p><div class="check-grid" id="confluenceChecks">
+            <label><input type="checkbox" value="H4 structure"> H4 structure supports direction</label><label><input type="checkbox" value="Liquidity event"> Relevant liquidity event</label><label><input type="checkbox" value="MSS/CHoCH"> Confirmed MSS / CHoCH</label><label><input type="checkbox" value="FVG/OB"> FVG / order block</label><label><input type="checkbox" value="Displacement"> Clear displacement</label><label><input type="checkbox" value="Spread checked"> Spread checked separately</label>
+          </div><div class="score-row"><span>Evidence checklist score</span><strong id="evidenceScore">0 / 6</strong></div><p class="small muted">This is a checklist count, not a win probability or a validated predictive score.</p></article>
+          <article class="panel"><h3>Analysis notes</h3><p id="planNotes" class="notes-text"></p><div class="form-footer"><button id="copyPlanBtn" class="button secondary">Copy trade plan</button><button id="newAnalysisBtn" class="button secondary">New analysis</button></div></article>
+        </div>
+      </section>
+
+      <section id="risk" class="view">
+        <div class="page-heading"><div><div class="eyebrow">CAPITAL PROTECTION</div><h1>Risk calculator</h1><p class="muted">Calculate theoretical risk from your verified entry and stop prices.</p></div></div>
+        <article class="panel">
+          <div class="field-grid">
+            <label>Account balance / equity<input id="balance" type="number" min="0" step="any" value="1000"></label>
+            <label>Risk per trade (%)<input id="riskPct" type="number" min="0" max="100" step="0.1" value="0.5"></label>
+            <label>Entry price<input id="riskEntry" type="number" step="any" placeholder="Entry"></label>
+            <label>Stop Loss<input id="riskSL" type="number" step="any" placeholder="Stop Loss"></label>
+            <label>Take Profit<input id="riskTP" type="number" step="any" placeholder="Take Profit"></label>
+            <label>Estimated costs (account currency)<input id="costs" type="number" min="0" step="any" value="0"></label>
+          </div>
+          <div class="notice amber-notice"><strong>Broker-specific position sizing</strong><p>Lot size cannot be reliably calculated without your broker's tick size, tick value, contract specifications and account currency. This calculator reports price-distance risk and target R:R only; it does not invent a lot size.</p></div>
+          <button id="calcRiskBtn" class="button primary">Calculate risk</button>
+          <div id="riskResults" class="risk-results"><div><span>Maximum planned risk</span><strong>—</strong></div><div><span>Stop distance</span><strong>—</strong></div><div><span>Target R:R</span><strong>—</strong></div><div><span>Estimated loss incl. costs</span><strong>—</strong></div></div>
+        </article>
+      </section>
+
+      <section id="journal" class="view">
+        <div class="page-heading"><div><div class="eyebrow">DISCIPLINE & REVIEW</div><h1>Trade journal</h1><p class="muted">Record trades and outcomes. Entries are stored on this device.</p></div></div>
+        <article class="panel">
+          <div class="field-grid">
+            <label>Symbol<input id="jSymbol" value="XAUUSD"></label>
+            <label>Direction<select id="jDirection"><option>BUY</option><option>SELL</option></select></label>
+            <label>Entry<input id="jEntry" type="number" step="any" placeholder="Entry"></label>
+            <label>Exit<input id="jExit" type="number" step="any" placeholder="Exit"></label>
+            <label>Result<select id="jResult"><option>Win</option><option>Loss</option><option>Breakeven</option><option>Skipped</option></select></label>
+            <label>R multiple<input id="jR" type="number" step="any" placeholder="e.g. 2"></label>
+          </div>
+          <label class="full-field">Lesson / notes<textarea id="jNotes" rows="2" placeholder="What did you follow well? What needs improvement?"></textarea></label>
+          <div class="form-footer"><span></span><button id="addJournalBtn" class="button primary">Add journal entry</button></div>
+        </article>
+        <div id="journalList" class="list-stack"></div>
+      </section>
+
+      <section id="history" class="view">
+        <div class="page-heading"><div><div class="eyebrow">LOCAL RECORDS</div><h1>Analysis history</h1><p class="muted">Saved plans remain in this browser unless you clear its site data.</p></div><button id="clearHistoryBtn" class="button secondary">Clear history</button></div>
+        <div id="historyList" class="list-stack"></div>
+      </section>
+      <footer class="main-footer">TICOH ICT SMART TRADER · Educational decision-support software. Trading involves substantial risk.</footer>
+    </section>
+  </main>
+  <div id="toast" role="status" class="toast" aria-live="polite"></div>
+  <script src="app.js"></script>
+</body>
+</html>
